@@ -30,6 +30,12 @@ public class WebHookController {
 	
 	private JsonMapper jsonMapper = new DefaultJsonMapper();
 	
+	private static final String POSTBACK_START_CHAT = "START_CHAT";
+	private static final String POSTBACK_LEAVE_CHAT = "LEAVE_CHAT";
+	private static final String TEXT_START_CHAT_REGEX = "^/[Ii][Nn]";
+	private static final String TEXT_LEAVE_CHAT_REGEX = "^/[Oo][Uu][Tt]";
+	
+	
 	private FacebookClient pageClient = new DefaultFacebookClient(
 			Configurer.PAGE_TOKEN, Version.VERSION_2_6);
 	
@@ -101,6 +107,14 @@ public class WebHookController {
 	
 	private void processTextMessage(String userId, String text) {
 		System.out.println("__WEBHOOK_TEXT_MESSAGE__[" + userId + "][" + text + "]");
+		
+		if (text.matches(TEXT_START_CHAT_REGEX)) {
+			startChat(userId);
+		} else if (text.matches(TEXT_LEAVE_CHAT_REGEX)) {
+			leaveChat(userId);
+		} else {
+			
+		}
 	}
 	
 	private void processImageMessage(String userId, String imageUrl) {
@@ -109,17 +123,23 @@ public class WebHookController {
 	
 	private void processPostbackMessage(String userId, String postbackValue) {
 		System.out.println("__WEBHOOK_POSTBACK_MESSAGE__[" + userId + "][" + postbackValue + "]");
+		
+		if (postbackValue.equals(POSTBACK_START_CHAT)) {
+			startChat(userId);
+		} else if (postbackValue.equals(POSTBACK_LEAVE_CHAT)) {
+			leaveChat(userId);
+		}
 	}
 	
-	private void joinChat() {
+	private void startChat(String userId) {
 		
 	}
 	
-	private void leaveChat() {
+	private void leaveChat(String userId) {
 		
 	}
 	
-	private void sendMessage() {
+	private void sendMessage(String userId) {
 		
 	}
 }
