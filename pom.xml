@@ -67,7 +67,7 @@
 				<configuration>
 					<url>http://128.199.223.91:8080/manager/text</url>
 					<server>VPS</server>
-					<path>/uetbot</path>
+					<path>/uetchat</path>
 				</configuration>
 			</plugin>
 		</plugins>
