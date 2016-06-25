@@ -1,5 +1,6 @@
 package net.bqc.uetchat.controller;
 
+import java.sql.Connection;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -12,18 +13,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.restfb.DefaultFacebookClient;
 import com.restfb.DefaultJsonMapper;
-import com.restfb.FacebookClient;
 import com.restfb.JsonMapper;
-import com.restfb.Version;
+import com.restfb.types.send.Message;
 import com.restfb.types.webhook.WebhookObject;
 import com.restfb.types.webhook.messaging.MessageItem;
 import com.restfb.types.webhook.messaging.MessagingAttachment;
 import com.restfb.types.webhook.messaging.MessagingItem;
 import com.restfb.types.webhook.messaging.PostbackItem;
 
-import net.bqc.uetchat.utils.Configurer;
+import net.bqc.uetchat.is.DAOInterface;
+import net.bqc.uetchat.is.DAOMySQLImpl;
+import net.bqc.uetchat.is.DBConnector;
+import net.bqc.uetchat.utils.FBMessageObject;
 
 @Controller
 public class WebHookController {
@@ -35,9 +37,8 @@ public class WebHookController {
 	private static final String TEXT_START_CHAT_REGEX = "^/[Ii][Nn]";
 	private static final String TEXT_LEAVE_CHAT_REGEX = "^/[Oo][Uu][Tt]";
 	
-	
-	private FacebookClient pageClient = new DefaultFacebookClient(
-			Configurer.PAGE_TOKEN, Version.VERSION_2_6);
+	private DAOInterface dao = new DAOMySQLImpl();
+	private Connection con;
 	
 	@RequestMapping(value="/webhook", method={RequestMethod.GET})
 	public String validate(Model model,
@@ -71,6 +72,8 @@ public class WebHookController {
 		System.out.println("__WEBHOOK_INFO__USER_SEND__" + jsonAsString);
 		
 		try {
+			con = DBConnector.getInstance().createConnection();
+			
 			WebhookObject whObject = jsonMapper.toJavaObject(
 					jsonAsString, WebhookObject.class);
 			
@@ -100,6 +103,9 @@ public class WebHookController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResponseEntity<String>("can not get json", HttpStatus.OK);
+				
+		} finally {
+			DBConnector.closeConnection(con);
 		}
 		
 		return new ResponseEntity<String>("success", HttpStatus.OK);
@@ -109,37 +115,97 @@ public class WebHookController {
 		System.out.println("__WEBHOOK_TEXT_MESSAGE__[" + userId + "][" + text + "]");
 		
 		if (text.matches(TEXT_START_CHAT_REGEX)) {
-			startChat(userId);
+			joinChat(userId);
 		} else if (text.matches(TEXT_LEAVE_CHAT_REGEX)) {
 			leaveChat(userId);
 		} else {
-			
+			Message textMessage = FBMessageObject.buildTextMessage(text);
+			sendMessage(userId, textMessage);
 		}
 	}
 	
 	private void processImageMessage(String userId, String imageUrl) {
 		System.out.println("__WEBHOOK_IMAGE_MESSAGE__[" + userId + "][" + imageUrl + "]");
+		
+		Message imageMessage = FBMessageObject.buildImageMessage(imageUrl);
+		sendMessage(userId, imageMessage);
 	}
 	
 	private void processPostbackMessage(String userId, String postbackValue) {
 		System.out.println("__WEBHOOK_POSTBACK_MESSAGE__[" + userId + "][" + postbackValue + "]");
 		
 		if (postbackValue.equals(POSTBACK_START_CHAT)) {
-			startChat(userId);
+			joinChat(userId);
 		} else if (postbackValue.equals(POSTBACK_LEAVE_CHAT)) {
 			leaveChat(userId);
 		}
 	}
 	
-	private void startChat(String userId) {
+	private void joinChat(String userId) {
+		dao.addUser(con, userId);
 		
+		FBMessageObject.sendMessage(
+				userId,
+				FBMessageObject.buildGenericMessage(
+						"Searching...",
+						"\u0110ang t\u00ECm c\u00E1 cho b\u1EA1n th\u1EA3 th\u00EDnh...",
+						null, null));
+		
+		String partner = dao.getRandomUserNotInChat(con, userId);
+		if (partner != null) {
+			startChat(userId, partner);
+		}
+	}
+	
+	private void startChat(String lhs, String rhs) {
+		dao.addUserInChat(con, lhs);
+		dao.addUserInChat(con, rhs);
+		dao.addChat(con, lhs, rhs);
+		FBMessageObject.sendMessage(
+				lhs,
+				FBMessageObject.buildTextMessage(
+						"Done! C\u00E1 \u0111\u00E3 c\u1EAFn c\u00E2u, h\u00E3y gi\u1EADt c\u1EA7n \u0111i n\u00E0o =))"));
+		FBMessageObject.sendMessage(
+				rhs,
+				FBMessageObject.buildTextMessage(
+						"Done! C\u00E1 \u0111\u00E3 c\u1EAFn c\u00E2u, h\u00E3y gi\u1EADt c\u1EA7n \u0111i n\u00E0o =))"));
 	}
 	
 	private void leaveChat(String userId) {
+		String partner = dao.getPartnerInChat(con, userId);
+		if (partner == null) return;
 		
+		dao.removeChatByUserId(con, userId, partner);
+		dao.removeUserById(con, userId);
+		dao.removeUserById(con, partner);
+		
+		FBMessageObject.sendMessage(
+				userId,
+				FBMessageObject.buildTextMessage("B\u1EA1n \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
+		FBMessageObject.sendMessage(
+				partner,
+				FBMessageObject.buildTextMessage("\u0110\u1ED1i ph\u01B0\u01A1ng \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
+		
+		FBMessageObject.sendMessage(
+				userId,
+				FBMessageObject.buildGenericMessage(
+						"Chat v\u1EDBi UETer",
+						"OK, b\u1EA1n h\u00E3y b\u1EA5m n\u00FAt d\u01B0\u1EDBi \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u \u0111i th\u1EA3 th\u00EDnh n\u00E0o ^^!",
+						"B\u1EAFt \u0111\u1EA7u chat",
+						"START_CHAT"));
+		FBMessageObject.sendMessage(
+				partner,
+				FBMessageObject.buildGenericMessage(
+						"Chat v\u1EDBi UETer",
+						"OK, b\u1EA1n h\u00E3y b\u1EA5m n\u00FAt d\u01B0\u1EDBi \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u \u0111i th\u1EA3 th\u00EDnh n\u00E0o ^^!",
+						"B\u1EAFt \u0111\u1EA7u chat",
+						"START_CHAT"));
 	}
 	
-	private void sendMessage(String userId) {
+	private void sendMessage(String userId, Message message) {
+		String partner = dao.getPartnerInChat(con, userId);
+		if (partner == null) return;
 		
+		FBMessageObject.sendMessage(partner, message);
 	}
 }

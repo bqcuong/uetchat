@@ -116,4 +116,22 @@ public class DAOMySQLImpl implements DAOInterface {
 		}
 	}
 
+	@Override
+	public String getPartnerInChat(Connection con, String lhs) {
+		PreparedStatement statement; 
+		
+		try {
+			statement = con.prepareStatement(GET_PARTNER_IN_CHAT);
+			statement.setString(1, lhs);
+			ResultSet rs = statement.executeQuery();
+			if (rs.next()) {
+				return rs.getString(1);
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }
