@@ -9,6 +9,7 @@ public class DAOMySQLImpl implements DAOInterface {
 
 	@Override
 	public boolean addUser(Connection con, String userId) {
+		if (con == null || userId == null) return false;
 		PreparedStatement statement; 
 				
 		try {
@@ -24,6 +25,7 @@ public class DAOMySQLImpl implements DAOInterface {
 	
 	@Override
 	public boolean addUserInChat(Connection con, String userId) {
+		if (con == null || userId == null) return false;
 		PreparedStatement statement; 
 		
 		try {
@@ -40,6 +42,7 @@ public class DAOMySQLImpl implements DAOInterface {
 
 	@Override
 	public boolean removeUserById(Connection con, String userId) {
+		if (con == null || userId == null) return false;
 		PreparedStatement statement; 
 		
 		try {
@@ -55,6 +58,7 @@ public class DAOMySQLImpl implements DAOInterface {
 
 	@Override
 	public boolean addChat(Connection con, String lhs, String rhs) {
+		if (con == null || lhs == null || rhs == null) return false;
 		PreparedStatement statement; 
 		PreparedStatement statement2; 
 		
@@ -79,6 +83,7 @@ public class DAOMySQLImpl implements DAOInterface {
 
 	@Override
 	public boolean removeChatByUserId(Connection con, String lhs, String rhs) {
+		if (con == null || lhs == null || rhs == null) return false;
 		PreparedStatement statement; 
 		PreparedStatement statement2; 
 		
@@ -100,6 +105,7 @@ public class DAOMySQLImpl implements DAOInterface {
 
 	@Override
 	public String getRandomUserNotInChat(Connection con, String lhs) {
+		if (con == null || lhs == null) return null;
 		PreparedStatement statement; 
 		
 		try {
@@ -118,6 +124,7 @@ public class DAOMySQLImpl implements DAOInterface {
 
 	@Override
 	public String getPartnerInChat(Connection con, String lhs) {
+		if (con == null || lhs == null) return null;
 		PreparedStatement statement; 
 		
 		try {
@@ -135,12 +142,13 @@ public class DAOMySQLImpl implements DAOInterface {
 	}
 
 	@Override
-	public String getUserStatusById(Connection con, String fbid) {
+	public String getUserStatusById(Connection con, String userId) {
+		if (con == null || userId == null) return null;
 		PreparedStatement statement; 
 		
 		try {
 			statement = con.prepareStatement(GET_USER_STATUS_BY_ID);
-			statement.setString(1, fbid);
+			statement.setString(1, userId);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
 				return rs.getString(1);

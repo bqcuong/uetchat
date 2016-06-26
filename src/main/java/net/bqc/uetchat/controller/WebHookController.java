@@ -179,6 +179,17 @@ public class WebHookController {
 	}
 	
 	private void leaveChat(String userId) {
+		FBMessageObject.sendMessage(
+				userId,
+				FBMessageObject.buildTextMessage("B\u1EA1n \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
+		FBMessageObject.sendMessage(
+				userId,
+				FBMessageObject.buildGenericMessage(
+						"Chat v\u1EDBi UETer",
+						"OK, b\u1EA1n h\u00E3y b\u1EA5m n\u00FAt d\u01B0\u1EDBi \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u \u0111i th\u1EA3 th\u00EDnh n\u00E0o ^^!",
+						"B\u1EAFt \u0111\u1EA7u chat",
+						"START_CHAT"));
+		
 		String partner = dao.getPartnerInChat(con, userId);
 		if (partner == null) return;
 		
@@ -187,19 +198,9 @@ public class WebHookController {
 		dao.removeUserById(con, partner);
 		
 		FBMessageObject.sendMessage(
-				userId,
-				FBMessageObject.buildTextMessage("B\u1EA1n \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
-		FBMessageObject.sendMessage(
 				partner,
 				FBMessageObject.buildTextMessage("\u0110\u1ED1i ph\u01B0\u01A1ng \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
 		
-		FBMessageObject.sendMessage(
-				userId,
-				FBMessageObject.buildGenericMessage(
-						"Chat v\u1EDBi UETer",
-						"OK, b\u1EA1n h\u00E3y b\u1EA5m n\u00FAt d\u01B0\u1EDBi \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u \u0111i th\u1EA3 th\u00EDnh n\u00E0o ^^!",
-						"B\u1EAFt \u0111\u1EA7u chat",
-						"START_CHAT"));
 		FBMessageObject.sendMessage(
 				partner,
 				FBMessageObject.buildGenericMessage(
