@@ -134,4 +134,22 @@ public class DAOMySQLImpl implements DAOInterface {
 		}
 	}
 
+	@Override
+	public String getUserStatusById(Connection con, String fbid) {
+		PreparedStatement statement; 
+		
+		try {
+			statement = con.prepareStatement(GET_USER_STATUS_BY_ID);
+			statement.setString(1, fbid);
+			ResultSet rs = statement.executeQuery();
+			if (rs.next()) {
+				return rs.getString(1);
+			}
+			return null;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 }

@@ -18,6 +18,8 @@ public interface DAOInterface {
 			"SELECT user_id FROM `user` WHERE NOT user_id = ? AND in_chat = 'N' ORDER BY RAND() LIMIT 1";
 	public static final String GET_PARTNER_IN_CHAT =
 			"SELECT rhs FROM `chat` WHERE lhs = ?";
+	public static final String GET_USER_STATUS_BY_ID = 
+			"SELECT in_chat FROM `user` WHERE user_id = ?";
 	
 	public boolean addUser(Connection con, String userId);
 	public boolean addUserInChat(Connection con, String userId);
@@ -26,4 +28,5 @@ public interface DAOInterface {
 	public boolean removeChatByUserId(Connection con, String lhs, String rhs);
 	public String getRandomUserNotInChat(Connection con, String lhs);
 	public String getPartnerInChat(Connection con, String lhs);
+	public String getUserStatusById(Connection con, String fbid);
 }

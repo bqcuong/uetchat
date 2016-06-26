@@ -158,6 +158,13 @@ public class WebHookController {
 	}
 	
 	private void startChat(String lhs, String rhs) {
+		String lhsStatus = dao.getUserStatusById(con, lhs);
+		String rhsStatus = dao.getUserStatusById(con, rhs);
+		
+		if (lhsStatus.equals("Y") || rhsStatus.equals("Y")) {
+			return;
+		}
+		
 		dao.addUserInChat(con, lhs);
 		dao.addUserInChat(con, rhs);
 		dao.addChat(con, lhs, rhs);
