@@ -1,6 +1,7 @@
 package net.bqc.uetchat.is;
 
 import java.sql.Connection;
+import java.util.List;
 
 public interface DAOInterface {
 	
@@ -20,6 +21,8 @@ public interface DAOInterface {
 			"SELECT rhs FROM `chat` WHERE lhs = ?";
 	public static final String GET_USER_STATUS_BY_ID = 
 			"SELECT in_chat FROM `user` WHERE user_id = ?";
+	public static final String GET_ALL_USER = 
+			"SELECT * FROM `user`";
 	
 	public boolean addUser(Connection con, String userId);
 	public boolean addUserInChat(Connection con, String userId);
@@ -28,5 +31,6 @@ public interface DAOInterface {
 	public boolean removeChatByUserId(Connection con, String lhs, String rhs);
 	public String getRandomUserNotInChat(Connection con, String lhs);
 	public String getPartnerInChat(Connection con, String lhs);
-	public String getUserStatusById(Connection con, String fbid);
+	public String getUserStatusById(Connection con, String userId);
+	public List<User> getAllUsers(Connection con);
 }

@@ -8,11 +8,11 @@ public class Configurer {
 
 	public static String PAGE_TOKEN;
 	public static String JDBC_DRIVER;
-	public static String DB_URL;
-	public static String DB_USERNAME; 
-	public static String DB_PASSWORD;
 	public static String API_KEY;
 	public static String APP_URL;
+	public static String DB_URL;
+	public static String DB_USERNAME;
+	public static String DB_PASSWORD;
 	
 	static {
 		try {

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DAOMySQLImpl implements DAOInterface {
 
@@ -157,6 +159,29 @@ public class DAOMySQLImpl implements DAOInterface {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	@Override
+	public List<User> getAllUsers(Connection con) {
+		if (con == null) return null;
+		PreparedStatement statement; 
+		List<User> list = null;
+				
+		try {
+			statement = con.prepareStatement(GET_ALL_USER);
+			ResultSet rs = statement.executeQuery();
+			
+			list = new ArrayList<User>();
+			while (rs.next()) {
+				list.add(new User(rs.getString(1), rs.getString(2)));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			return list;
 		}
 	}
 
