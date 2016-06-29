@@ -68,7 +68,7 @@ public class WebHookController {
 	public ResponseEntity<String> receive(Model model,
 			@RequestBody final String jsonAsString){
 		
-		System.out.println("__WEBHOOK_INFO__USER_SEND__" + jsonAsString);
+//		System.out.println("__WEBHOOK_INFO__USER_SEND__" + jsonAsString);
 		
 		try {
 			con = DBConnector.getInstance().createConnection();
@@ -117,7 +117,7 @@ public class WebHookController {
 	}
 	
 	private void processTextMessage(String userId, String text) {
-		System.out.println("__WEBHOOK_TEXT_MESSAGE__[" + userId + "][" + text + "]");
+//		System.out.println("__WEBHOOK_TEXT_MESSAGE__[" + userId + "][" + text + "]");
 		
 		if (text.matches(TEXT_LEAVE_CHAT_REGEX)) {
 			leaveChat(userId);
@@ -128,7 +128,7 @@ public class WebHookController {
 	}
 	
 	private void processImageMessage(String userId, String imageUrl) {
-		System.out.println("__WEBHOOK_IMAGE_MESSAGE__[" + userId + "][" + imageUrl + "]");
+//		System.out.println("__WEBHOOK_IMAGE_MESSAGE__[" + userId + "][" + imageUrl + "]");
 		
 		Message imageMessage = FBMessageObject.buildImageMessage(imageUrl);
 		sendMessage(userId, imageMessage);
