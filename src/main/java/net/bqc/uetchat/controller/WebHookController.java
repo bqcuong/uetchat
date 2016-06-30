@@ -25,6 +25,7 @@ import net.bqc.uetchat.is.DAOInterface;
 import net.bqc.uetchat.is.DAOMySQLImpl;
 import net.bqc.uetchat.is.DBConnector;
 import net.bqc.uetchat.utils.FBMessageObject;
+import net.bqc.uetchat.utils.Helper;
 
 @Controller
 public class WebHookController {
@@ -143,7 +144,8 @@ public class WebHookController {
 	// }
 	
 	private void joinChat(String userId) {
-		dao.addUser(con, userId);
+		String gender = Helper.getUserGender(userId);
+		dao.addUser(con, userId, gender);
 		FBMessageObject.sendMessage(
 				userId,
 				FBMessageObject.buildGenericMessage(
@@ -151,7 +153,7 @@ public class WebHookController {
 						"\u0110ang t\u00ECm c\u00E1 cho b\u1EA1n th\u1EA3 th\u00EDnh...",
 						null, null));
 		
-		String partner = dao.getRandomUserNotInChat(con, userId);
+		String partner = dao.getRandomUserNotInChat(con, userId, gender);
 		if (partner != null) {
 			startChat(userId, partner);
 		}

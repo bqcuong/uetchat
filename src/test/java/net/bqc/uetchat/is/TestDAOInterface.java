@@ -10,11 +10,13 @@ public class TestDAOInterface {
 //		dao.addUser(con, "2345678");
 		
 		String lhs = "1234569";
-		dao.addUser(con, lhs);
+		String rhs = "64564574573";
+//		dao.addUser(con, lhs, null);
 		
-		System.out.println(dao.getUserStatusById(con, lhs));
-		dao.addUserInChat(con, lhs);
-		System.out.println(dao.getUserStatusById(con, lhs));
+//		System.out.println(dao.getRandomUserNotInChat(con, "1234569", "M"));
+		System.out.println(dao.getRandomUserNotInChat(con, lhs, "M"));
+//		dao.addUserInChat(con, lhs);
+//		System.out.println(dao.getUserStatusById(con, lhs));
 //		String rhs = dao.getRandomUserNotInChat(con, "1234567");
 		
 //		dao.addUserInChat(con, lhs);

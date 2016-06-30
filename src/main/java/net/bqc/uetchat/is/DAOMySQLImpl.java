@@ -10,13 +10,14 @@ import java.util.List;
 public class DAOMySQLImpl implements DAOInterface {
 
 	@Override
-	public boolean addUser(Connection con, String userId) {
+	public boolean addUser(Connection con, String userId, String gender) {
 		if (con == null || userId == null) return false;
 		PreparedStatement statement; 
 				
 		try {
 			statement = con.prepareStatement(ADD_USER);
 			statement.setString(1, userId);
+			statement.setString(2, gender);
 			statement.executeUpdate();
 			return true;
 			
@@ -106,13 +107,15 @@ public class DAOMySQLImpl implements DAOInterface {
 	}
 
 	@Override
-	public String getRandomUserNotInChat(Connection con, String lhs) {
-		if (con == null || lhs == null) return null;
+	public String getRandomUserNotInChat(Connection con, String lhs, String gender) {
+		if (con == null || lhs == null || gender == null) return null;
 		PreparedStatement statement; 
 		
 		try {
 			statement = con.prepareStatement(GET_RANDOM_USER_NOT_IN_CHAT);
 			statement.setString(1, lhs);
+			statement.setString(2, gender);
+			statement.setString(3, gender);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
 				return rs.getString(1);
