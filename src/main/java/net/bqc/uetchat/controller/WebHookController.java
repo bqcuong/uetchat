@@ -95,13 +95,13 @@ public class WebHookController {
 			else {
 				MessageItem messageItem = messagingItem.getMessage();
 				List<MessagingAttachment> attachments = messageItem.getAttachments(); 
+				String text = messageItem.getText();
 				
-				if (!attachments.isEmpty()) {
+				if (!attachments.isEmpty() && text == null) {
 					String imageUrl = attachments.get(0).getPayload().getUrl();
 					processImageMessage(userId, imageUrl);
 					
 				} else {
-					String text = messageItem.getText();
 					processTextMessage(userId, text);
 				}
 			}
