@@ -1,4 +1,4 @@
-curl -X POST -H "Content-Type: application/json" -d '{"object":"page","entry":[{"id":"1037793939646192","time":1466791892214,"messaging":[{"sender":{"id":"1103710079675517"},"recipient":{"id":"1037793939646192"},"timestamp":1466791892214,"postback":{"payload":"START_CHAT"}}]}]}' "http://localhost/uetchat/webhook"
+curl -X POST -H "Content-Type: application/json" -d '{"object":"page","entry":[{"id":"1037793939646192","time":1466773962662,"messaging":[{"sender":{"id":"1103710079675517"},"recipient":{"id":"1037793939646192"},"timestamp":1466773962572,"message":{"mid":"mid.1466773962336:2186ec542490e4fa08","seq":2983,"text":"tim ca ho t"}}]}]}' "http://localhost/uetchat/webhook"
 
 =================================================
 
@@ -10,4 +10,4 @@ curl -X POST -H "Content-Type: application/json" -d '{"object":"page","entry":[{
 
 =================================================
 
-curl -X POST -H "Content-Type: application/json" -d '{"object":"page","entry":[{"id":"1037793939646192","time":1466773962662,"messaging":[{"sender":{"id":"1103710079675517"},"recipient":{"id":"1037793939646192"},"timestamp":1466773962572,"message":{"mid":"mid.1466773962336:2186ec542490e4fa08","seq":2983,"text":"\/out"}}]}]}' "http://localhost/uetchat/webhook"
+curl -X POST -H "Content-Type: application/json" -d '{"object":"page","entry":[{"id":"1037793939646192","time":1466773962662,"messaging":[{"sender":{"id":"1103710079675517"},"recipient":{"id":"1037793939646192"},"timestamp":1466773962572,"message":{"mid":"mid.1466773962336:2186ec542490e4fa08","seq":2983,"text":"pp"}}]}]}' "http://localhost/uetchat/webhook"
