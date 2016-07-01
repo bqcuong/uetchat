@@ -2,7 +2,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"object":"page","entry":[{
 
 =================================================
 
-curl -X POST -H "Content-Type: application/json" -d '{"object":"page","entry":[{"id":"1037793939646192","time":1466773962662,"messaging":[{"sender":{"id":"1052185374835666"},"recipient":{"id":"1037793939646192"},"timestamp":1466773962572,"message":{"mid":"mid.1466773962336:2186ec542490e4fa08","seq":2983,"text":"\\\\\\\\\\\\\\\\\"}}]}]}' "http://localhost/uetchat/webhook"
+curl -X POST -H "Content-Type: application/json" -d '{"object":"page","entry":[{"id":"1037793939646192","time":1466773962662,"messaging":[{"sender":{"id":"1052185374835666"},"recipient":{"id":"1037793939646192"},"timestamp":1466773962572,"message":{"mid":"mid.1466773962336:2186ec542490e4fa08","seq":2983,"text":"\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02\uD83D\uDE02"}}]}]}' "http://localhost/uetchat/webhook"
 
 =================================================
 

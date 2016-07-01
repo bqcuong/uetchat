@@ -77,34 +77,33 @@ public class WebHookController {
 			WebhookObject whObject = jsonMapper.toJavaObject(
 					jsonAsString, WebhookObject.class);
 			
-			MessagingItem messagingItem = whObject.getEntryList().get(0)
-					.getMessaging().get(0);
-			String userId = messagingItem.getSender().getId();
-			// PostbackItem postBackItem = messagingItem.getPostback();
+			List<MessagingItem> messagingItems = whObject.getEntryList().get(0)
+					.getMessaging();
 			
-			// add user to db when he sends anything
-			String userStatus = dao.getUserStatusById(con, userId);
-			if (userStatus == null) {
-				joinChat(userId);
+			for (MessagingItem messagingItem : messagingItems) {
+				String userId = messagingItem.getSender().getId();
+				// PostbackItem postBackItem = messagingItem.getPostback();
 				
-			}
-			// else if (postBackItem != null) {
-			// 	String postbackValue = postBackItem.getPayload();
-			// 	processPostbackMessage(userId, postbackValue);
-			// } 
-			else {
-				MessageItem messageItem = messagingItem.getMessage();
-				List<MessagingAttachment> attachments = messageItem.getAttachments(); 
-				String text = messageItem.getText();
-				
-				if (!attachments.isEmpty() && text == null) {
-					String imageUrl = attachments.get(0).getPayload().getUrl();
-					processImageMessage(userId, imageUrl);
+				// add user to db when he sends anything
+				String userStatus = dao.getUserStatusById(con, userId);
+				if (userStatus == null) {
+					joinChat(userId);
 					
 				} else {
-					processTextMessage(userId, text);
+					MessageItem messageItem = messagingItem.getMessage();
+					List<MessagingAttachment> attachments = messageItem.getAttachments(); 
+					String text = messageItem.getText();
+					
+					if (!attachments.isEmpty() && text == null) {
+						String imageUrl = attachments.get(0).getPayload().getUrl();
+						processImageMessage(userId, imageUrl);
+						
+					} else {
+						processTextMessage(userId, text);
+					}
 				}
 			}
+			
 			
 		} catch (Exception e) {
 			System.out.println("__WEBHOOK_ERROR_JSON__[" + jsonAsString + "]");
