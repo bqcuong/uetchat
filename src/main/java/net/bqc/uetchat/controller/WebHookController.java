@@ -123,8 +123,10 @@ public class WebHookController {
 		if (text.matches(TEXT_LEAVE_CHAT_REGEX)) {
 			leaveChat(userId);
 		} else {
-			Message textMessage = FBMessageObject.buildTextMessage(text);
-			sendMessage(userId, textMessage);
+			String partner = dao.getPartnerInChat(con, userId);
+			if (partner == null) return;
+			
+			FBMessageObject.sendMessage(partner, text);
 		}
 	}
 	
