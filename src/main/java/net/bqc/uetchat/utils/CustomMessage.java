@@ -1,0 +1,17 @@
+package net.bqc.uetchat.utils;
+
+public class CustomMessage {
+	private String text;
+	
+	public CustomMessage(String text) {
+		this.text = text;
+	}
+	
+	public String getText() {
+		return text;
+	}
+	
+	public void setText(String text) {
+		this.text = text;
+	}
+}
