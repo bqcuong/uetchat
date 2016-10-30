@@ -14,4 +14,4 @@ Prerequisite
 
 Configuration
 -------------
-Checkout `src/main/resources/config.properties`
+Checkout `src/main/resources/config.properties` and [Messenger Platform](https://developers.facebook.com/docs/messenger-platform)
