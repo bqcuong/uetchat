@@ -65,8 +65,8 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<url>http://128.199.223.91:8080/manager/text</url>
-					<server>VPS</server>
+					<url>http://localhost:8080/manager/text</url>
+					<server>HOME</server>
 					<path>/uetchat</path>
 				</configuration>
 			</plugin>
