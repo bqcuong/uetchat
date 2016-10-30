@@ -1,6 +1,5 @@
 package net.bqc.uetchat.utils;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import com.restfb.DefaultFacebookClient;
