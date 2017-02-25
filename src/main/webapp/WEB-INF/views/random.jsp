@@ -17,6 +17,12 @@
 
 <br/>
 
+<form action="/uetchat/random" method="post">
+	<input type="submit" value="Random"/>
+</form>
+
+<hr>
+
 <c:if test="${not empty users}">
 	<c:forEach var="u" items="${users}">
 		${u} <br/>

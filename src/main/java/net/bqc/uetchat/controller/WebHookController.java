@@ -3,8 +3,10 @@ package net.bqc.uetchat.controller;
 import java.sql.Connection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,22 +26,44 @@ import com.restfb.types.webhook.messaging.MessagingItem;
 import net.bqc.uetchat.is.DAOInterface;
 import net.bqc.uetchat.is.DAOMySQLImpl;
 import net.bqc.uetchat.is.DBConnector;
+import net.bqc.uetchat.is.User;
 import net.bqc.uetchat.utils.FBMessageObject;
+import net.bqc.uetchat.utils.FbUser;
 import net.bqc.uetchat.utils.Helper;
 
 @Controller
 public class WebHookController {
 
 	private JsonMapper jsonMapper = new DefaultJsonMapper();
+	
+	private static final Logger logger = Logger.getLogger(WebHookController.class);
 
-//	private static final String POSTBACK_START_CHAT = "START_CHAT";
-//	private static final String POSTBACK_LEAVE_CHAT = "LEAVE_CHAT";
-//	private static final String TEXT_START_CHAT_REGEX = "^/[Ii][Nn]";
 	private static final String TEXT_LEAVE_CHAT_REGEX = "^[Pp][Pp].*";
 
 	private DAOInterface dao = new DAOMySQLImpl();
-	private Connection con;
+	private static final Connection con = DBConnector.getInstance().createConnection();
 
+	
+	@RequestMapping(value="/random", method=RequestMethod.POST)
+	public String random(Model model) {
+		try {
+			List<User> users = dao.getUsersNotInChat(con);
+			logger.info("Run manually random....");
+			for (User user : users) {
+				if (!user.getInChat().equals("Y")) {
+					String partner = dao.getRandomUserNotInChat(con, user.getUserId(), user.getGender());
+					if (partner != null) {
+						startChat(user.getUserId(), partner);
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+		}
+		return "redirect:/random";
+	}
+	
 	@RequestMapping(value="/webhook", method={RequestMethod.GET})
 	public String validate(Model model,
 			@RequestParam(value="hub.challenge", required=false) String challenge,
@@ -49,10 +73,10 @@ public class WebHookController {
 		if (token != null) {
 			if (token.equalsIgnoreCase("cuong_is_the_boss")) {
 				model.addAttribute("result", challenge);
-				System.out.println("__WEBHOOK_INFO__USER_SEND__validate done");
+				logger.info("Validate done");
 			} else {
 				model.addAttribute("result", "Error, wrong validation token");
-				System.out.println("__WEBHOOK_INFO__USER_SEND__validate failed");
+				logger.info("Validate failed");
 			}
 
 			return "validate";
@@ -69,10 +93,7 @@ public class WebHookController {
 	public ResponseEntity<String> receive(Model model,
 			@RequestBody final String jsonAsString){
 
-//		System.out.println("__WEBHOOK_INFO__USER_SEND__[" + jsonAsString + "]");
-
 		try {
-			con = DBConnector.getInstance().createConnection();
 
 			WebhookObject whObject = jsonMapper.toJavaObject(
 					jsonAsString, WebhookObject.class);
@@ -106,19 +127,16 @@ public class WebHookController {
 
 
 		} catch (Exception e) {
-			System.out.println("__WEBHOOK_ERROR_JSON__[" + jsonAsString + "]");
+			logger.info("RequestExp=" + jsonAsString);
+			logger.info("Exception=" + e.getMessage() );
 			return new ResponseEntity<String>("can not get json", HttpStatus.OK);
 
-		} finally {
-			DBConnector.closeConnection(con);
 		}
 
 		return new ResponseEntity<String>("success", HttpStatus.OK);
 	}
 
 	private void processTextMessage(String userId, String text) {
-//		System.out.println("__WEBHOOK_TEXT_MESSAGE__[" + userId + "][" + text + "]");
-
 		if (text.matches(TEXT_LEAVE_CHAT_REGEX)) {
 			leaveChat(userId);
 		} else {
@@ -130,23 +148,21 @@ public class WebHookController {
 	}
 
 	private void processImageMessage(String userId, String imageUrl) {
-//		System.out.println("__WEBHOOK_IMAGE_MESSAGE__[" + userId + "][" + imageUrl + "]");
-
 		Message imageMessage = FBMessageObject.buildImageMessage(imageUrl);
 		sendMessage(userId, imageMessage);
 	}
 
-	// private void processPostbackMessage(String userId, String postbackValue) {
-	// 	System.out.println("__WEBHOOK_POSTBACK_MESSAGE__[" + userId + "][" + postbackValue + "]");
-
-	// 	if (postbackValue.equals(POSTBACK_LEAVE_CHAT)) {
-	// 		leaveChat(userId);
-	// 	}
-	// }
-
+	@Async
 	private void joinChat(String userId) {
-		String gender = Helper.getUserGender(userId);
-		dao.addUser(con, userId, gender);
+		FbUser fbUser = Helper.getFbUser(userId);
+		boolean success = dao.addUser(con, userId, fbUser);
+		logger.info(fbUser);
+		logger.info(success);
+		if (success == false) {
+			FBMessageObject.sendErrorMessage(userId);
+			return;
+		}
+		
 		FBMessageObject.sendMessage(
 				userId,
 				FBMessageObject.buildGenericMessage(
@@ -154,6 +170,7 @@ public class WebHookController {
 						"\u0110ang t\u00ECm c\u00E1 cho b\u1EA1n th\u1EA3 th\u00EDnh...",
 						null, null));
 
+		String gender = (fbUser == null) ? "M" : fbUser.getGender();
 		String partner = dao.getRandomUserNotInChat(con, userId, gender);
 		if (partner != null) {
 			startChat(userId, partner);
@@ -171,6 +188,9 @@ public class WebHookController {
 		dao.addUserInChat(con, lhs);
 		dao.addUserInChat(con, rhs);
 		dao.addChat(con, lhs, rhs);
+		
+		logger.info("Mapping: " + lhs + " | " + rhs);
+
 		FBMessageObject.sendMessage(
 				lhs,
 				FBMessageObject.buildTextMessage(
@@ -181,7 +201,17 @@ public class WebHookController {
 						"[BOT]Done! C\u00E1 \u0111\u00E3 c\u1EAFn c\u00E2u, h\u00E3y gi\u1EADt c\u1EA7n \u0111i n\u00E0o =))"));
 	}
 
+	@Async
 	private void leaveChat(String userId) {
+
+		dao.removeUserById(con, userId);
+
+		String partner = dao.getPartnerInChat(con, userId);
+		if (partner == null) return;
+
+		dao.removeChatByUserId(con, userId, partner);
+		dao.removeUserById(con, partner);
+		
 		FBMessageObject.sendMessage(
 				userId,
 				FBMessageObject.buildTextMessage("[BOT]B\u1EA1n \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
@@ -191,14 +221,6 @@ public class WebHookController {
 						"Finished...",
 						"G\u00F5 k\u00ED t\u1EF1 b\u1EA5t k\u00EC \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u th\u1EA3 th\u00EDnh ^^ G\u00F5 pp \u0111\u1EC3 k\u1EBFt th\u00FAc",
 						null, null));
-
-		dao.removeUserById(con, userId);
-
-		String partner = dao.getPartnerInChat(con, userId);
-		if (partner == null) return;
-
-		dao.removeChatByUserId(con, userId, partner);
-		dao.removeUserById(con, partner);
 
 		FBMessageObject.sendMessage(
 				partner,
@@ -214,8 +236,11 @@ public class WebHookController {
 
 	private void sendMessage(String userId, Message message) {
 		String partner = dao.getPartnerInChat(con, userId);
-		if (partner == null) return;
-
-		FBMessageObject.sendMessage(partner, message);
+		try {
+			FBMessageObject.sendMessage(partner, message);
+		} catch (Exception e) {
+			logger.info(e.getMessage());
+			FBMessageObject.sendErrorMessage(userId);
+		}
 	}
 }

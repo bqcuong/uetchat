@@ -7,21 +7,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.bqc.uetchat.utils.FbUser;
+
 public class DAOMySQLImpl implements DAOInterface {
 
 	@Override
-	public boolean addUser(Connection con, String userId, String gender) {
+	public boolean addUser(Connection con, String userId, FbUser fbUser) {
 		if (con == null || userId == null) return false;
 		PreparedStatement statement; 
-				
+		if (fbUser == null) fbUser = new FbUser();
 		try {
 			statement = con.prepareStatement(ADD_USER);
 			statement.setString(1, userId);
-			statement.setString(2, gender);
+			statement.setString(2, fbUser.getGender());
+			statement.setString(3, fbUser.getFirstName());
+			statement.setString(4, fbUser.getLastName());
 			statement.executeUpdate();
 			return true;
 			
 		} catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}	
 	}
@@ -177,7 +182,30 @@ public class DAOMySQLImpl implements DAOInterface {
 			
 			list = new ArrayList<User>();
 			while (rs.next()) {
-				list.add(new User(rs.getString(1), rs.getString(2)));
+				list.add(new User(rs.getString(1), rs.getString(2), rs.getString(3)));
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			
+		} finally {
+			return list;
+		}
+	}
+	
+	@Override
+	public List<User> getUsersNotInChat(Connection con) {
+		if (con == null) return null;
+		PreparedStatement statement; 
+		List<User> list = null;
+		
+		try {
+			statement = con.prepareStatement(GET_USERS_NOT_IN_CHAT);
+			ResultSet rs = statement.executeQuery();
+			
+			list = new ArrayList<User>();
+			while (rs.next()) {
+				list.add(new User(rs.getString(1), rs.getString(2), rs.getString(3)));
 			}
 			
 		} catch (SQLException e) {

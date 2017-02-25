@@ -15,6 +15,21 @@
 		<jstl.version>1.2</jstl.version>
 	</properties>
   	<dependencies>
+  	
+  	    <!-- https://mvnrepository.com/artifact/org.slf4j/jul-to-slf4j -->
+	    <dependency>
+	    	<groupId>org.slf4j</groupId>
+	    	<artifactId>jul-to-slf4j</artifactId>
+	    	<version>1.7.22</version>
+	    </dependency>
+	
+	    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
+	    <dependency>
+	    	<groupId>org.slf4j</groupId>
+	    	<artifactId>slf4j-log4j12</artifactId>
+	    	<version>1.7.22</version>
+	    </dependency>
+  	
 		<!-- spring mvc -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -65,8 +80,8 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>2.2</version>
 				<configuration>
-					<url>http://localhost:8080/manager/text</url>
-					<server>HOME</server>
+					<url>http://163.44.207.3:8080/manager/text</url>
+					<server>VPS_CHATBOT</server>
 					<path>/uetchat</path>
 				</configuration>
 			</plugin>

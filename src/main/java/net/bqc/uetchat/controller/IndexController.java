@@ -27,36 +27,24 @@ public class IndexController {
 	
 	private ObjectMapper jsonMapper = new ObjectMapper();
 	
-	@RequestMapping(value="/", method=RequestMethod.GET)
-	public String hello(Model model,
-			@RequestParam(value="action", required=false) String action) {
+	@RequestMapping(value="/random", method=RequestMethod.GET)
+	public String hello(Model model) {
+
+		Connection con = DBConnector.getInstance().createConnection();
+		DAOInterface dao = new DAOMySQLImpl();
+		List<User> list = dao.getAllUsers(con);
 		
-		if (action != null && action.equals("testdb")) {
-//			System.out.println("____in Test db___");
-//			System.out.println("____HOST____" + System.getenv("OPENSHIFT_MYSQL_DB_HOST"));
-//			System.out.println("____PORT____" + System.getenv("OPENSHIFT_MYSQL_DB_PORT"));
-//			System.out.println("____USERNAME____" + System.getenv("OPENSHIFT_MYSQL_DB_USERNAME"));
-//			System.out.println("____PASSWORD____" + System.getenv("OPENSHIFT_MYSQL_DB_PASSWORD"));
-//			System.out.println("____URL____" + System.getenv("OPENSHIFT_MYSQL_DB_URL"));
-			
-			//return "db";
-			Connection con = DBConnector.getInstance().createConnection();
-			DAOInterface dao = new DAOMySQLImpl();
-			List<User> list = dao.getAllUsers(con);
-			
-			if (list == null) {
-				model.addAttribute("message", "Connection to db failed");
-			} else if (list.isEmpty()) {
-				model.addAttribute("message", "No user online");
-			} else {
-				model.addAttribute("users", list);
-			}
-			
-			DBConnector.closeConnection(con);
-			
+		if (list == null) {
+			model.addAttribute("message", "Connection to db failed");
+		} else if (list.isEmpty()) {
+			model.addAttribute("message", "No user online");
+		} else {
+			model.addAttribute("users", list);
 		}
 		
-		return "index";
+		DBConnector.closeConnection(con);
+					
+		return "random";
 	}
 	
 	@RequestMapping(

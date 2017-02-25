@@ -29,6 +29,14 @@ public class FBMessageObject {
 				Parameter.with("message", message));
 	}
 	
+	public static void sendErrorMessage(String recipient) {
+		sendMessage(recipient, 
+				FBMessageObject.buildGenericMessage(
+						"Error...",
+						"[BOT]Server hi\u1EC7n t\u1EA1i \u0111ang qu\u00E1 t\u1EA3i. Xin b\u1EA1n g\u1EEDi l\u1EA1i tin nh\u1EAFn^^!",
+						null, null));
+	}
+	
 	public static Message buildGenericMessage(
 			String title, String subtitle, String postbackTitle, String postbackValue) {
 
@@ -61,4 +69,5 @@ public class FBMessageObject {
 		
 		rstTempl.postForEntity(API, textMessage, String.class);
 	}
+
 }
