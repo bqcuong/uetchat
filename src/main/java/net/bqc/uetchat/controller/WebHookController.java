@@ -103,25 +103,29 @@ public class WebHookController {
 
 			for (MessagingItem messagingItem : messagingItems) {
 				String userId = messagingItem.getSender().getId();
-				// PostbackItem postBackItem = messagingItem.getPostback();
-
-				// add user to db when he sends anything
-				String userStatus = dao.getUserStatusById(con, userId);
-				if (userStatus == null) {
-					joinChat(userId);
-
-				} else {
-					MessageItem messageItem = messagingItem.getMessage();
-					List<MessagingAttachment> attachments = messageItem.getAttachments();
-					String text = messageItem.getText();
-
-					if (!attachments.isEmpty() && text == null) {
-						String imageUrl = attachments.get(0).getPayload().getUrl();
-						processImageMessage(userId, imageUrl);
+				try {
+					// add user to db when he sends anything
+					String userStatus = dao.getUserStatusById(con, userId);
+					if (userStatus == null) {
+						joinChat(userId);
 
 					} else {
-						processTextMessage(userId, text);
+						MessageItem messageItem = messagingItem.getMessage();
+						List<MessagingAttachment> attachments = messageItem.getAttachments();
+						String text = messageItem.getText();
+
+						if (!attachments.isEmpty() && text == null) {
+							String imageUrl = attachments.get(0).getPayload().getUrl();
+							processImageMessage(userId, imageUrl);
+
+						} else {
+							processTextMessage(userId, text);
+						}
 					}
+				} catch (Exception e) {
+					logger.info("RequestExp=" + jsonAsString);
+					logger.info("Exception=" + e.getMessage());
+					FBMessageObject.sendErrorMessage(userId);
 				}
 			}
 
