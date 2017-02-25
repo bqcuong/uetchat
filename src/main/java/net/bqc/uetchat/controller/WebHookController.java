@@ -125,7 +125,7 @@ public class WebHookController {
 				} catch (Exception e) {
 					logger.info("RequestExp=" + jsonAsString);
 					logger.info("Exception=" + e.getMessage());
-					FBMessageObject.sendErrorMessage(userId);
+//					FBMessageObject.sendErrorMessage(userId);
 				}
 			}
 
@@ -163,7 +163,7 @@ public class WebHookController {
 		logger.info(fbUser);
 		logger.info(success);
 		if (success == false) {
-			FBMessageObject.sendErrorMessage(userId);
+//			FBMessageObject.sendErrorMessage(userId);
 			return;
 		}
 		
@@ -244,7 +244,7 @@ public class WebHookController {
 			FBMessageObject.sendMessage(partner, message);
 		} catch (Exception e) {
 			logger.info(e.getMessage());
-			FBMessageObject.sendErrorMessage(userId);
+//			FBMessageObject.sendErrorMessage(userId);
 		}
 	}
 }
