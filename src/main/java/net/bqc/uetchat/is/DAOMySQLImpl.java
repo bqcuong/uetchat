@@ -90,20 +90,16 @@ public class DAOMySQLImpl implements DAOInterface {
 	}
 
 	@Override
-	public boolean removeChatByUserId(Connection con, String lhs, String rhs) {
-		if (con == null || lhs == null || rhs == null) return false;
+	public boolean removeChatByUserId(Connection con, String lhs) {
+		if (con == null || lhs == null) return false;
 		PreparedStatement statement; 
-		PreparedStatement statement2; 
 		
 		try {
 			statement = con.prepareStatement(REMOVE_CHAT_BY_USER_ID);
 			statement.setString(1, lhs);
-			
-			statement2 = con.prepareStatement(REMOVE_CHAT_BY_USER_ID);
-			statement2.setString(1, rhs);
+			statement.setString(2, lhs);
 			
 			statement.executeUpdate();
-			statement2.executeUpdate();
 			return true;
 			
 		} catch (SQLException e) {
@@ -112,15 +108,13 @@ public class DAOMySQLImpl implements DAOInterface {
 	}
 
 	@Override
-	public String getRandomUserNotInChat(Connection con, String lhs, String gender) {
-		if (con == null || lhs == null || gender == null) return null;
+	public String getRandomUserNotInChat(Connection con, String lhs) {
+		if (con == null || lhs == null) return null;
 		PreparedStatement statement; 
 		
 		try {
 			statement = con.prepareStatement(GET_RANDOM_USER_NOT_IN_CHAT);
 			statement.setString(1, lhs);
-			statement.setString(2, gender);
-			statement.setString(3, gender);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
 				return rs.getString(1);

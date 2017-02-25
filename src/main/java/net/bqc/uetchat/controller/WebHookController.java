@@ -51,7 +51,7 @@ public class WebHookController {
 			logger.info("Run manually random....");
 			for (User user : users) {
 				if (!user.getInChat().equals("Y")) {
-					String partner = dao.getRandomUserNotInChat(con, user.getUserId(), user.getGender());
+					String partner = dao.getRandomUserNotInChat(con, user.getUserId());
 					if (partner != null) {
 						startChat(user.getUserId(), partner);
 					}
@@ -161,7 +161,6 @@ public class WebHookController {
 		FbUser fbUser = Helper.getFbUser(userId);
 		boolean success = dao.addUser(con, userId, fbUser);
 		logger.info(fbUser);
-		logger.info(success);
 		if (success == false) {
 //			FBMessageObject.sendErrorMessage(userId);
 			return;
@@ -174,8 +173,7 @@ public class WebHookController {
 						"\u0110ang t\u00ECm c\u00E1 cho b\u1EA1n th\u1EA3 th\u00EDnh...",
 						null, null));
 
-		String gender = (fbUser == null) ? "M" : fbUser.getGender();
-		String partner = dao.getRandomUserNotInChat(con, userId, gender);
+		String partner = dao.getRandomUserNotInChat(con, userId);
 		if (partner != null) {
 			startChat(userId, partner);
 		}
@@ -213,7 +211,7 @@ public class WebHookController {
 		String partner = dao.getPartnerInChat(con, userId);
 		if (partner == null) return;
 
-		dao.removeChatByUserId(con, userId, partner);
+		dao.removeChatByUserId(con, userId);
 		dao.removeUserById(con, partner);
 		
 		FBMessageObject.sendMessage(
