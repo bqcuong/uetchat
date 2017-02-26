@@ -183,9 +183,12 @@ public class WebHookController {
 	}
 
 	private void startChat(String lhs, String rhs) {
+		if (dao.isInChat(con, lhs) || dao.isInChat(con, rhs)) {
+			return ;
+		}
+		dao.addChat(con, lhs, rhs);
 		dao.addUserInChat(con, lhs);
 		dao.addUserInChat(con, rhs);
-		dao.addChat(con, lhs, rhs);
 		
 		logger.info("[Mapping] {" + lhs + ", " + rhs + ")");
 
