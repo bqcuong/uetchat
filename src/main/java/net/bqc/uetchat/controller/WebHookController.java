@@ -220,7 +220,7 @@ public class WebHookController {
 		if (partner == null) return;
 
 		dao.removeChatByUserId(con, userId);
-		logger.debug("[Destroy] {" + userId + ", " + partner + "}");
+		logger.info("[Destroy] {" + userId + ", " + partner + "}");
 		
 		dao.removeUserById(con, partner);
 		logger.info("[Destroy] " + partner + " From Users");
