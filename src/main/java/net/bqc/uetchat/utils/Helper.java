@@ -37,8 +37,7 @@ public class Helper {
 			}
 			return fbUser;
 		} catch (RestClientException e) {
-			logger.info(e.getMessage());
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			return new FbUser();
 		}
 		
@@ -67,8 +66,8 @@ public class Helper {
 			return response.toString();
 			
 		} catch (IOException e) {
-			logger.info("Error when send get to facebook api");
-			logger.info(e.getMessage());
+			logger.error("[Exception] " + e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 

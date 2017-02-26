@@ -7,10 +7,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import net.bqc.uetchat.utils.FbUser;
 
 public class DAOMySQLImpl implements DAOInterface {
 
+	private static final Logger logger = Logger.getLogger(DAOMySQLImpl.class);
+	
 	@Override
 	public boolean addUser(Connection con, String userId, FbUser fbUser) {
 		if (con == null || userId == null) return false;
@@ -26,7 +30,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			return true;
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			return false;
 		}	
 	}
@@ -43,7 +47,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			return true;
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			return false;
 		}
 	}
@@ -84,7 +88,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			return true;
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			return false;
 		}
 	}
@@ -138,7 +142,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			}
 			return null;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			return null;
 		}
 	}
@@ -157,7 +161,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			}
 			return null;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			return null;
 		}
 	}
@@ -176,7 +180,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			}
 			return null;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			return null;
 		}
 	}
@@ -197,7 +201,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			
 		} finally {
 			return list;
@@ -220,7 +224,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			}
 			
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("[Exception] " + e.getMessage());
 			
 		} finally {
 			return list;

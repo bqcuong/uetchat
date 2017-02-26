@@ -73,10 +73,10 @@ public class WebHookController {
 		if (token != null) {
 			if (token.equalsIgnoreCase("cuong_is_the_boss")) {
 				model.addAttribute("result", challenge);
-				logger.info("Validate done");
+				logger.info("Webhook validate done");
 			} else {
 				model.addAttribute("result", "Error, wrong validation token");
-				logger.info("Validate failed");
+				logger.info("Webhook validate failed");
 			}
 			return "validate";
 		}
@@ -93,6 +93,8 @@ public class WebHookController {
 
 		try {
 
+			logger.info("[Message] " + jsonAsString);
+			
 			WebhookObject whObject = jsonMapper.toJavaObject(
 					jsonAsString, WebhookObject.class);
 
@@ -121,17 +123,15 @@ public class WebHookController {
 						}
 					}
 				} catch (Exception e) {
-					logger.info("RequestExp=" + jsonAsString);
-					logger.info("Exception=" + e.getMessage());
-//					FBMessageObject.sendErrorMessage(userId);
+					logger.error("[Exception] " + e.getMessage());
+					return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				}
 			}
 
 
 		} catch (Exception e) {
-			logger.info("RequestExp=" + jsonAsString);
-			logger.info("Exception=" + e.getMessage() );
-			return new ResponseEntity<String>("can not get json", HttpStatus.OK);
+			logger.error("[Exception] " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 		}
 
@@ -187,7 +187,7 @@ public class WebHookController {
 		dao.addUserInChat(con, rhs);
 		dao.addChat(con, lhs, rhs);
 		
-		logger.info("Mapping: " + lhs + " | " + rhs);
+		logger.info("[Mapping] {" + lhs + ", " + rhs + ")");
 
 		FBMessageObject.sendMessage(
 				lhs,
@@ -207,6 +207,7 @@ public class WebHookController {
 	private void leaveChat(String userId) {
 
 		dao.removeUserById(con, userId);
+		logger.info("[Destroy] " + userId + " From Users");
 
 		FBMessageObject.sendMessage(
 				userId,
@@ -219,7 +220,10 @@ public class WebHookController {
 		if (partner == null) return;
 
 		dao.removeChatByUserId(con, userId);
+		logger.debug("[Destroy] {" + userId + ", " + partner + "}");
+		
 		dao.removeUserById(con, partner);
+		logger.info("[Destroy] " + partner + " From Users");
 
 		FBMessageObject.sendMessage(
 				partner,
