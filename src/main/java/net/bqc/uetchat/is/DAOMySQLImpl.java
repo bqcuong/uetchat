@@ -120,8 +120,10 @@ public class DAOMySQLImpl implements DAOInterface {
 			statement = con.prepareStatement(FIND_CHAT_BY_USER_ID);
 			statement.setString(1, lhs);
 			statement.setString(2, lhs);
-			statement.executeQuery();
-			return true;
+			ResultSet rs = statement.executeQuery();
+			if (rs.next())
+				return true;
+			else return false;
 			
 		} catch (SQLException e) {
 			return false;
@@ -157,7 +159,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			statement.setString(1, lhs);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
-				return rs.getString("rhs");
+				return rs.getString("rhs_fb_id");
 			}
 			return null;
 		} catch (SQLException e) {
