@@ -172,7 +172,7 @@ public class WebHookController {
 		FBMessageObject.sendMessage(
 				userId,
 				FBMessageObject.buildGenericMessage(
-						"Searching...",
+						"Th\u1EA3 c\u00E2u...",
 						"\u0110ang t\u00ECm c\u00E1 cho b\u1EA1n th\u1EA3 th\u00EDnh...",
 						null, null));
 
@@ -191,12 +191,16 @@ public class WebHookController {
 
 		FBMessageObject.sendMessage(
 				lhs,
-				FBMessageObject.buildTextMessage(
-						"[BOT]Done! C\u00E1 \u0111\u00E3 c\u1EAFn c\u00E2u, h\u00E3y gi\u1EADt c\u1EA7n \u0111i n\u00E0o =))"));
+				FBMessageObject.buildGenericMessage(
+						"Xong!",
+						"C\u00E1 \u0111\u00E3 c\u1EAFn c\u00E2u, h\u00E3y gi\u1EADt c\u1EA7n \u0111i n\u00E0o =)) G\u00F5 pp \u0111\u1EC3 k\u1EBFt th\u00FAc.",
+						null, null));
 		FBMessageObject.sendMessage(
 				rhs,
-				FBMessageObject.buildTextMessage(
-						"[BOT]Done! C\u00E1 \u0111\u00E3 c\u1EAFn c\u00E2u, h\u00E3y gi\u1EADt c\u1EA7n \u0111i n\u00E0o =))"));
+				FBMessageObject.buildGenericMessage(
+						"Xong!",
+						"C\u00E1 \u0111\u00E3 c\u1EAFn c\u00E2u, h\u00E3y gi\u1EADt c\u1EA7n \u0111i n\u00E0o =)) G\u00F5 pp \u0111\u1EC3 k\u1EBFt th\u00FAc.",
+						null, null));
 	}
 
 	@Async
@@ -206,12 +210,9 @@ public class WebHookController {
 
 		FBMessageObject.sendMessage(
 				userId,
-				FBMessageObject.buildTextMessage("[BOT]B\u1EA1n \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
-		FBMessageObject.sendMessage(
-				userId,
 				FBMessageObject.buildGenericMessage(
-						"Finished...",
-						"G\u00F5 k\u00ED t\u1EF1 b\u1EA5t k\u00EC \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u th\u1EA3 th\u00EDnh ^^ G\u00F5 pp \u0111\u1EC3 k\u1EBFt th\u00FAc",
+						"B\u1EA1n \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!",
+						"G\u00F5 k\u00ED t\u1EF1 b\u1EA5t k\u00EC \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u th\u1EA3 th\u00EDnh ^^",
 						null, null));
 		
 		String partner = dao.getPartnerInChat(con, userId);
@@ -222,13 +223,9 @@ public class WebHookController {
 
 		FBMessageObject.sendMessage(
 				partner,
-				FBMessageObject.buildTextMessage("[BOT]\u0110\u1ED1i ph\u01B0\u01A1ng \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
-
-		FBMessageObject.sendMessage(
-				partner,
 				FBMessageObject.buildGenericMessage(
-						"Finished...",
-						"G\u00F5 k\u00ED t\u1EF1 b\u1EA5t k\u00EC \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u th\u1EA3 th\u00EDnh ^^ G\u00F5 pp \u0111\u1EC3 k\u1EBFt th\u00FAc",
+						"\u0110\u1ED1i ph\u01B0\u01A1ng \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!",
+						"G\u00F5 k\u00ED t\u1EF1 b\u1EA5t k\u00EC \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u th\u1EA3 th\u00EDnh ^^",
 						null, null));
 	}
 
