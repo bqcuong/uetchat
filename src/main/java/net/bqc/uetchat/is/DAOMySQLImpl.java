@@ -106,6 +106,23 @@ public class DAOMySQLImpl implements DAOInterface {
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean isInChat(Connection con, String lhs) {
+		if (con == null || lhs == null) return false;
+		PreparedStatement statement; 
+		
+		try {
+			statement = con.prepareStatement(FIND_CHAT_BY_USER_ID);
+			statement.setString(1, lhs);
+			statement.setString(2, lhs);
+			statement.executeQuery();
+			return true;
+			
+		} catch (SQLException e) {
+			return false;
+		}
+	}
 
 	@Override
 	public String getRandomUserNotInChat(Connection con, String lhs) {
@@ -117,7 +134,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			statement.setString(1, lhs);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
-				return rs.getString(1);
+				return rs.getString("user_id");
 			}
 			return null;
 		} catch (SQLException e) {
@@ -136,7 +153,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			statement.setString(1, lhs);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
-				return rs.getString(1);
+				return rs.getString("rhs");
 			}
 			return null;
 		} catch (SQLException e) {
@@ -155,7 +172,7 @@ public class DAOMySQLImpl implements DAOInterface {
 			statement.setString(1, userId);
 			ResultSet rs = statement.executeQuery();
 			if (rs.next()) {
-				return rs.getString(1);
+				return rs.getString("in_chat");
 			}
 			return null;
 		} catch (SQLException e) {

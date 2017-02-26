@@ -78,10 +78,8 @@ public class WebHookController {
 				model.addAttribute("result", "Error, wrong validation token");
 				logger.info("Validate failed");
 			}
-
 			return "validate";
 		}
-
 		return "redirect:/";
 	}
 
@@ -158,11 +156,16 @@ public class WebHookController {
 
 	@Async
 	private void joinChat(String userId) {
+		boolean isInChat = dao.isInChat(con, userId); 
+		
+		if (isInChat) {
+			dao.removeChatByUserId(con, userId);
+		}
+		
 		FbUser fbUser = Helper.getFbUser(userId);
 		boolean success = dao.addUser(con, userId, fbUser);
 		logger.info(fbUser);
 		if (success == false) {
-//			FBMessageObject.sendErrorMessage(userId);
 			return;
 		}
 		
@@ -180,13 +183,6 @@ public class WebHookController {
 	}
 
 	private void startChat(String lhs, String rhs) {
-		String lhsStatus = dao.getUserStatusById(con, lhs);
-		String rhsStatus = dao.getUserStatusById(con, rhs);
-
-		if (lhsStatus.equals("Y") || rhsStatus.equals("Y")) {
-			return;
-		}
-
 		dao.addUserInChat(con, lhs);
 		dao.addUserInChat(con, rhs);
 		dao.addChat(con, lhs, rhs);
@@ -208,12 +204,6 @@ public class WebHookController {
 
 		dao.removeUserById(con, userId);
 
-		String partner = dao.getPartnerInChat(con, userId);
-		if (partner == null) return;
-
-		dao.removeChatByUserId(con, userId);
-		dao.removeUserById(con, partner);
-		
 		FBMessageObject.sendMessage(
 				userId,
 				FBMessageObject.buildTextMessage("[BOT]B\u1EA1n \u0111\u00E3 ng\u01B0ng th\u1EA3 th\u00EDnh!"));
@@ -223,6 +213,12 @@ public class WebHookController {
 						"Finished...",
 						"G\u00F5 k\u00ED t\u1EF1 b\u1EA5t k\u00EC \u0111\u1EC3 b\u1EAFt \u0111\u1EA7u th\u1EA3 th\u00EDnh ^^ G\u00F5 pp \u0111\u1EC3 k\u1EBFt th\u00FAc",
 						null, null));
+		
+		String partner = dao.getPartnerInChat(con, userId);
+		if (partner == null) return;
+
+		dao.removeChatByUserId(con, userId);
+		dao.removeUserById(con, partner);
 
 		FBMessageObject.sendMessage(
 				partner,
