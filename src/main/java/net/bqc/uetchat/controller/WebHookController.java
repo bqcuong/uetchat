@@ -34,13 +34,13 @@ import net.bqc.uetchat.utils.Helper;
 @Controller
 public class WebHookController {
 
-	private JsonMapper jsonMapper = new DefaultJsonMapper();
+	private static JsonMapper jsonMapper = new DefaultJsonMapper();
 	
 	private static final Logger logger = Logger.getLogger(WebHookController.class);
 
-	private static final String TEXT_LEAVE_CHAT_REGEX = "^[Pp][Pp].*";
+//	private static final String TEXT_LEAVE_CHAT_REGEX = "pp";
 
-	private DAOInterface dao = new DAOMySQLImpl();
+	private static DAOInterface dao = new DAOMySQLImpl();
 	private static final Connection con = DBConnector.getInstance().createConnection();
 
 	
@@ -139,7 +139,7 @@ public class WebHookController {
 	}
 
 	private void processTextMessage(String userId, String text) {
-		if (text.matches(TEXT_LEAVE_CHAT_REGEX)) {
+		if (text.toLowerCase().equals("pp")) {
 			leaveChat(userId);
 		} else {
 			String partner = dao.getPartnerInChat(con, userId);
